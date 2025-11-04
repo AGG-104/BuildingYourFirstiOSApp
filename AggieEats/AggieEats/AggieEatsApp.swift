@@ -9,7 +9,7 @@ import SwiftUI
 struct AggieEatsApp: App {
     var body: some Scene {
         WindowGroup {
-            HomePage()
+            TabBarView()
         }
     }
 }

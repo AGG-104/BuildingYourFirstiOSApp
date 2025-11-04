@@ -7,7 +7,14 @@ import SwiftUI
 
 struct TabBarView: View {
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        TabView{
+            Tab("Today", systemImage: "house"){
+                HomePage()
+            }
+            Tab("Weekly Menu", systemImage: "menucard"){
+                WeeklyMenuView()
+            }
+        }
     }
 }
 
