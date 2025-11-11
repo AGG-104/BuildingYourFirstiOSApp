@@ -5,35 +5,48 @@
 
 import SwiftUI
 import MapKit
+import CodeScanner
 
 //TODO: Import this package: https://github.com/twostraws/CodeScanner
-
 struct HomePage: View {
+    @State var showScanner = false
+    @State var navigateToOrderingPage = false
     var body: some View {
-        ScrollView{
-            VStack(alignment: .leading){
-                VStack(alignment: .leading){
-                    HStack{
-                        Text("Today's Location")
-                            .font(.title2)
-                            .fontWeight(.bold)
-                        Spacer()
-                        ScanQrCodeButton() // Add button here!
-                    }
-                    Text("Memorial Union")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
+            NavigationStack {
+                ScrollView{
+                    VStack(alignment: .leading){
+                        VStack(alignment: .leading){
+                            HStack{
+                                Text("Today's Location")
+                                    .font(.title2)
+                                    .fontWeight(.bold)
+                                Spacer()
+                                ScanQrCodeButton(showScanner: $showScanner) // Add button here!
+                            }
+                            Text("Memorial Union")
+                                .font(.largeTitle)
+                                .fontWeight(.bold)
+                        }
+                        TruckLocationView()
+                        TodaysMenuView()
+                    } // end of outer VStack
                 }
-            } // end of outer VStack
-        } // end of scrollView
+            }
+
+        .sheet(isPresented: $showScanner) {
+            CodeScannerView(codeTypes: [.qr], simulatedData: "ABCDE", completion: handleScan)
+        }
+        .navigationDestination(isPresented: $navigateToOrderingPage) {
+            ConfirmOrderView()
+        }// end of scrollView
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
-}
     
-//TODO: Uncomment This Function When Implementing QR Code Scanning.
-  /* func handleScan(result: Result<ScanResult, ScanError>) {
-       showScanner = false
+    
+    //TODO: Uncomment This Function When Implementing QR Code Scanning.
+    func handleScan(result: Result<ScanResult, ScanError>) {
+        showScanner = false
         switch result {
         case .success(let result):
             navigateToOrderingPage = true
@@ -41,20 +54,21 @@ struct HomePage: View {
         case .failure(let error):
             print("Scanning failed: \(error.localizedDescription)")
         }
-    }*/
-
+    }
+}
 
 struct ScanQrCodeButton: View {
+    @Binding var showScanner: Bool
     var body: some View {
         Button{
-            // Implement Later
+            showScanner = true
         } label: {
             Image(systemName: "camera")
                 .imageScale(.large)
         }
     }
 }
-
+// Where we left off
 struct TruckLocationView: View {
     var body: some View {
         Map{
@@ -69,7 +83,10 @@ struct TruckLocationView: View {
 struct TodaysMenuView: View {
     var body: some View {
         VStack(alignment: .leading) {
-            EmptyView()
+            Text("What's On The Menu?")
+                .font(.title)
+                .fontWeight(.bold)
+            MenuOptionsView()
         }
     }
 }
